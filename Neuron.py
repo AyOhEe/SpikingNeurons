@@ -21,28 +21,28 @@ class Neuron:
     #continuous environment.
 
     #the value that excitation must surpass for a spike to occur
-    spike_threshold = 100
+    spike_threshold = 20
     #the value that charge is set to when a spike occurs
     spike_charge = 1
     #the neurotransmitter cost coefficient while the neuron is spiking
-    spike_cost_coeff = 15
+    spike_cost_coeff = 1.5
 
-    #TODO make refractory period proportional to the % neurotransmitters emitted,
+    #TODO make refractory period proportional to the % neurotransmitters emitted (i.e a - x),
     #which should emphasise synaptic fatigue
 
     #the value that refractory_state is set to when a spike occurs
     refractory_period = 5
 
     #the baseline neurotransmitter level
-    available_neurotrans = 100
+    available_neurotrans = 10
     #the neurotransmitter reuptake coefficient. controls how quickly reuptake occurs. [0, 1]
-    reuptake_coeff =  0.008
+    reuptake_coeff =  0.006
     #the amount of neurotransmitters required to start a spike
-    neurotrans_threshold = 40
+    neurotrans_threshold = 4
 
     #the factor by which excitation decays by each timestep. irrespective of any other factor. 
     #additive
-    excitation_decay = 1
+    excitation_decay = 0.2
     #the amount that refractory_state decays by each timestep. irrespective of any other factors. 
     #additive
     refractory_decay = 0.5
@@ -123,7 +123,7 @@ if __name__ == "__main__":
 
     period = 400
     sin_offset = 0.75
-    neuron_input = 20
+    neuron_input = 4
 
 
     #TODO i'd like these graphs to be slightly prettier, with some lines showing thresholds
@@ -135,7 +135,7 @@ if __name__ == "__main__":
     fig.set_figwidth(15)
 
     axes[0].set_xlim(0, n_ticks)
-    axes[0].set_ylim(0, 150)
+    axes[0].set_ylim(0, 50)
     axes[0].set_ylabel("Excitation")
     excitation_line, = axes[0].plot([], [], lw=2)
     
