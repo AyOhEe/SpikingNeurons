@@ -89,13 +89,19 @@ class SimulationWindow(tk.Frame):
 
             self.simulation_loaded = False
         else:
-            print("Loading simulation...")
-            self.load_unload_bttn.config(text="Unload simulation")
-
             #get a path and create the instance
             path = tkfd.askdirectory()
+
+            #exit if empty path (no directory selected)
+            if path == "":
+                return
+
+            #only proceed if instance creation was successful
             self.sim_instance = self.sim_class.load_sim(path)
             if not self.sim_instance is None:
+                print("Loading simulation...")
+                self.load_unload_bttn.config(text="Unload simulation")
+
                 self.simulation_loaded = True
                 self.active_sim_lbl.config(text=f"Active simulation: {path}")
 
@@ -107,16 +113,19 @@ class SimulationWindow(tk.Frame):
 
         print("Saving simulation...")
         #stop the simulation, save, and restart
-        if not self.sim_instance is None:
-            was_paused = self.sim_instance.sim_paused
+        was_paused = self.sim_instance.sim_paused
+        was_active = self.sim_instance.has_started()
 
-            self.sim_instance.stop()
-            self.sim_instance.save()
+        self.sim_instance.stop()
+        self.sim_instance.save()
+
+        #start the simulation if it was already started before saving
+        if was_active:
             self.sim_instance.start()
 
-            #pause the simulation if it was already paused before saving
-            if was_paused:
-                self.sim_instance.pause()
+        #pause the simulation if it was already paused before saving
+        if was_paused:
+            self.sim_instance.pause()
 
     #switches the simulation from on/off to off/on respectively
     def toggle_run_sim(self):
@@ -128,22 +137,20 @@ class SimulationWindow(tk.Frame):
             print("Pausing simulation...")
             self.start_stop_bttn.config(text="Unpause simulation")
 
-            if not self.sim_instance is None:
-                self.sim_instance.pause()
+            self.sim_instance.pause()
 
             self.simulation_running = False
         else:
             print("Starting simulation...")
             self.start_stop_bttn.config(text="Pause simulation")
 
-            if not self.sim_instance is None:
-                #only unpause if there's a thread already. otherwise, start one
-                if self.sim_instance.has_started():
-                    self.sim_instance.unpause()
-                else:
-                    self.sim_instance.start()
+            #only unpause if there's a thread already. otherwise, start one
+            if self.sim_instance.has_started():
+                self.sim_instance.unpause()
+            else:
+                self.sim_instance.start()
 
-                self.simulation_running = True
+            self.simulation_running = True
 
     #calls the simulation class' make_dir method
     def create_sim(self):
